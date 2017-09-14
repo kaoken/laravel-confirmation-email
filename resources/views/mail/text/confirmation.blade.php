@@ -2,7 +2,7 @@
 
 
 @lang('confirmation.msg_move_url')
-{{$register_url}}
+{{$registerUrl}}
 
 ・@lang('confirmation.msg_move_url')
 ・@lang('confirmation.msg_user_delete')

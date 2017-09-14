@@ -10,8 +10,7 @@ Laravelでユーザー仮登録後に確認メールを送り、指定アドレ�
 __コンテンツの一覧__
 
 - [インストール](#インストール)
-- [初期設定](#初期設定)
-- [使用例](#使用例)
+- [設定](#設定)
 - [ライセンス](#ライセンス)
 
 ## インストール
@@ -30,7 +29,7 @@ composer install kaoken/laravel-confirmation-email
   }
 ```
 
-## 初期設定
+## 設定
 
 ### **`config\app.php` に以下のように追加：**
 ``` config\app.php
@@ -52,7 +51,7 @@ Authユーザーが`users`の場合
 
 
 - `model`は、ユーザーモデルクラス
-- `path`は、URLの途中パス(`http(s):://hoge.com/{path}`)
+- `path`は、トークを使用した登録時に使用するURLの途中パス(例：`http(s):://hoge.com/{path}/{token}`)
 - `provider`は、ユーザーのテーブル名
 - `email_confirmation`は、[Mailable](https://readouble.com/laravel/5.5/ja/mail)で派生したクラスを必要に応じて変更すること。
 確認メールを送るときに使用する。
@@ -66,8 +65,8 @@ Authユーザーが`users`の場合
         'users' => [
             'model' => App\User::class,
             'path' => 'user/register/',
-            'email_confirmation' => \kaoken\LaravelConfirmation\Mail\ConfirmationMailToUser::class,
-            'email_registration' => \kaoken\LaravelConfirmation\Mail\ConfirmationMailToUser:RegistrationMailToUser,
+            'email_confirmation' => kaoken\LaravelConfirmation\Mail\ConfirmationMailToUser::class,
+            'email_registration' => kaoken\LaravelConfirmation\Mail\RegistrationMailToUser::class,
             'table' => 'confirmation_users',
             'expire' => 24,
         ]
@@ -106,8 +105,22 @@ php artisan vendor:publish --tag=confirmation
 php artisan migrate
 ```
 
+### カーネルへ追加
+`app\Console\Kernel.php`の`schedule`メソッドへ追加する。  
+これは、仮登録後24時間過ぎたユーザーを削除するために使用する。
+```php
+    protected function schedule(Schedule $schedule)
+    {
+        ...
+        App\Console\Kernel::schedule(Schedule $schedule){
+            $schedule->call(function(){
+                Confirmation::broker('user')->deleteUserAndToken();
+            )->hourly();
+        }
+    }
+```
 
-### 使用例
+### コントローラー
 
 ## ライセンス
 

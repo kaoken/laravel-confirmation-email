@@ -68,6 +68,7 @@ class ConfirmationBrokerManager implements FactoryContract
         }
 
         return new ConfirmationBroker(
+            $config,
             $this->createTokenRepository($config),
             $config['model'],
             $config['path'],

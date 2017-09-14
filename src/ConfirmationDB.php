@@ -3,13 +3,14 @@
 namespace kaoken\LaravelConfirmation;
 
 use DB;
+use kaoken\LaravelConfirmation\Events\ConfirmationEvent;
+use kaoken\LaravelConfirmation\Events\RegistrationEvent;
 use Log;
 use \Exception;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 class ConfirmationDB
 {
@@ -67,13 +68,14 @@ class ConfirmationDB
     }
 
     /**
-     * Create a new token record.
+     * Create a new token and Auth user.
      *
      * @param  array $data
      * @return string
      */
     public function create(array $data)
     {
+        $user = null;
         $this->connection->beginTransaction();
         try{
             if (is_null($user = ($this->model)::create($data))){
@@ -100,6 +102,7 @@ class ConfirmationDB
         }
 
         $this->connection->commit();
+        event(new ConfirmationEvent($user));
         return $token;
     }
 
@@ -130,7 +133,7 @@ class ConfirmationDB
     /**
      * Delete all existing reset tokens from the database.
      *
-     * @param  $user
+     * @param  object $user Auth user model
      * @return int
      */
     protected function deleteExisting($user)
@@ -164,7 +167,7 @@ class ConfirmationDB
     }
 
     /**
-     * Delete the record of the token and perform registration work.
+     * Delete the record of the token and perform Complete registration work.
      *
      * @param  string  $email
      * @param  string  $token
@@ -174,10 +177,13 @@ class ConfirmationDB
     {
         // Auth user table name
         $userTbl = '';
+        $user = null;
 
         try{
             $this->connection->beginTransaction();
-            $userTbl = with(new $this->model)->getTable();
+            $user = (new $this->model)::where('email', '=', $email)->first();
+
+            $userTbl = $user->getTable();
 
             if( !$this->checkEMailToken($email,$token) )
                 throw new Exception(IConfirmationBroker::INVALID_TOKEN);
@@ -218,6 +224,7 @@ class ConfirmationDB
             if( $isError ) Log::error("ConfirmationDB::delete Fail!!\n".$msg);
             return $e->getMessage();
         }
+        event(new RegistrationEvent($user));
         return IConfirmationBroker::REGISTRATION;
     }
 

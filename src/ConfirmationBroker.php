@@ -4,13 +4,16 @@ namespace kaoken\LaravelConfirmation;
 
 use DB;
 use Closure;
-use UnexpectedValueException;
-use Illuminate\Contracts\Mail\Mailer as MailerContract;
-use App\Library\Auth\Confirmation\CanConfirmation as CanConfirmationContract;
+use Illuminate\Mail\PendingMail;
 
 class ConfirmationBroker implements IConfirmationBroker
 {
-
+    /**
+     * Confirmation App config.
+     *
+     * @var array
+     */
+    protected $config;
     /**
      * ConfirmationDB instance.
      *
@@ -42,48 +45,50 @@ class ConfirmationBroker implements IConfirmationBroker
      *
      * @var string
      */
-    protected $emailConfirmationView;
+    protected $emailConfirmationClass;
 
     /**
      * It is a registration mail.
      *
      * @var string
      */
-    protected $emailRegistrationView;
+    protected $emailRegistrationClass;
 
     /**
      * Create a new confirmation broker instance.
+     * @param  array $config
      * @param  ConfirmationDB $db
      * @param  $model
      * @param  string $path
-     * @param  \Illuminate\Contracts\Mail\Mailer  $mailer
-     * @param  string  $emailConfirmationView
-     * @param  string  $emailConfirmationView
+     * @param  PendingMail  $mailer
+     * @param  string  $emailConfirmationClass
+     * @param  string  $emailConfirmationClass
      */
     public function __construct(
+        array $config,
         ConfirmationDB $db,
         $model,
-        $path,
-        MailerContract $mailer,
-        $emailConfirmationView,
-        $emailRegistrationView)
+        string $path,
+        PendingMail $mailer,
+        string $emailConfirmationClass,
+        string  $emailRegistrationClass)
     {
+        $this->config = $config;
         $this->db = $db;
         $this->path = $path;
         $this->model = $model;
         $this->mailer = $mailer;
-        $this->emailConfirmationView = $emailConfirmationView;
-        $this->emailRegistrationView = $emailRegistrationView;
+        $this->emailConfirmationClass = $emailConfirmationClass;
+        $this->emailRegistrationClass = $emailRegistrationClass;
     }
 
     /**
      * We will send a confirmation link to the user.
      *
      * @param  array  $all
-     * @param  \Closure|null  $callback
      * @return string
      */
-    public function createUserAndSendConfirmationLink(array $all, Closure $callback = null)
+    public function createUserAndSendConfirmationLink(array $all)
     {
         switch (($token = $this->db->create($all))) {
             case static::USER_FIND:
@@ -92,7 +97,7 @@ class ConfirmationBroker implements IConfirmationBroker
             return $token;
         }
 
-        $this->emailConfirmationLink($this->db->getUser($all['email']), $token, $callback);
+        $this->emailConfirmationLink($this->db->getUser($all['email']), $token);
 
         return static::CONFIRMATION_LINK_SENT;
     }
@@ -103,25 +108,12 @@ class ConfirmationBroker implements IConfirmationBroker
      *
      * @param  $user
      * @param  string  $token
-     * @param  \Closure|null  $callback
      * @return void
      */
-    public function emailConfirmationLink($user, $token, Closure $callback = null)
+    public function emailConfirmationLink($user, $token)
     {
-        $view = $this->emailConfirmationView;
-        $mailData = [
-            'user' => $user,
-            'token' => $token,
-            'register_url' => url($this->path.urlencode($user->email)."/".$token)
-        ];
-
-        $this->mailer->send($view, $mailData, function ($m) use ($user, $token, $callback) {
-            $m->to($user->email);
-
-            if (! is_null($callback)) {
-                call_user_func($callback, $m, $user, $token);
-            }
-        });
+        $class = $this->emailConfirmationClass;
+        $this->mailer->send(new $class($user, $token,url($this->path.urlencode($user->email)."/".$token)));
     }
 
     /**
@@ -136,19 +128,18 @@ class ConfirmationBroker implements IConfirmationBroker
     }
 
     /**
-     * registration
+     * Delete the record of the token and perform Complete registration work.
      * @param string $email mail address
      * @param string $token token
-     * @param  \Closure|null  $callback
      * @return bool Returns true if it exists.
      */
-    public function registration($email, $token, Closure $callback = null)
+    public function registration($email, $token)
     {
         if( $this->db->registration($email, $token) != static::REGISTRATION ){
             return static::INVALID_CONFIRMATION;
         }
 
-        $this->emailRegistration($this->db->getUser($email), $callback);
+        $this->emailRegistration($this->db->getUser($email));
 
         return static::REGISTRATION;
     }
@@ -162,18 +153,8 @@ class ConfirmationBroker implements IConfirmationBroker
      */
     protected function emailRegistration($user, Closure $callback = null)
     {
-        $view = $this->emailRegistrationView;
-        $mailData = [
-            'user' => $user
-        ];
-
-        return $this->mailer->send($view, $mailData, function ($m) use ($user, $callback) {
-            $m->to($user->email);
-
-            if (! is_null($callback)) {
-                call_user_func($callback, $m, $user);
-            }
-        });
+        $class = $this->emailRegistrationClass;
+        $this->mailer->send(new $class($user));
     }
 
     /**

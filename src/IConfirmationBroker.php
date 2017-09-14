@@ -52,19 +52,17 @@ interface IConfirmationBroker
      * Send a confirmation reset link to a user.
      *
      * @param  array  $all
-     * @param  \Closure|null  $callback
      * @return string
      */
-    public function createUserAndSendConfirmationLink(array $all, Closure $callback = null);
+    public function createUserAndSendConfirmationLink(array $all);
 
     /**
-     * 本登録をする
+     * Delete the record of the token and perform Complete registration work.
      * @param string $email mail address
      * @param string $token token
-     * @param  \Closure|null  $callback
      * @return bool Returns true if it exists.
      */
-    public function registration($email, $token, Closure $callback = null);
+    public function registration($email, $token);
 
     /**
      * Delete Auth users and tokens that are pre-registered and have expired.
