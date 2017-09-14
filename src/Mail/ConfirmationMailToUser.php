@@ -1,6 +1,6 @@
 <?php
 
-namespace kaoken\LaravelConfirmation;
+namespace kaoken\LaravelConfirmation\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
