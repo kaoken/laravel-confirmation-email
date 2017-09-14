@@ -30,7 +30,7 @@ class ConfirmationServiceProvider extends ServiceProvider
      */
     protected function my_resources_path($path='')
     {
-        return base_path('resources/'.$path);
+        return $this->my_base_path('resources/'.$path);
     }
 
     /**
