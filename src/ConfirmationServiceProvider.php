@@ -40,10 +40,12 @@ class ConfirmationServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->loadViewsFrom($this->my_resources_path('views'), 'confirmation');
+
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                $this->my_resources_path('views/vendor/confirmation') => resource_path('views/vendor/confirmation'),
-                $this->my_resources_path('lang/confirmation') => resource_path('lang'),
+                $this->my_resources_path('views') => resource_path('views/vendor/confirmation'),
+                $this->my_resources_path('lang') => resource_path('lang'),
                 $this->my_base_path('database/migrations') => database_path('migrations'),
             ], 'confirmation');
         }
