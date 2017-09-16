@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Library\Auth\Confirmation;
+namespace Kaoken\LaravelConfirmation;
 
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Illuminate\Contracts\Auth\PasswordBrokerFactory as FactoryContract;
-use App\Library\Auth\Confirmation\DatabaseTokenRepository;
 
 /**
  * @mixin ConfirmationBroker
@@ -40,7 +39,7 @@ class ConfirmationBrokerManager implements FactoryContract
      * Attempt to get the broker from the local cache.
      *
      * @param  string  $name
-     * @return \App\Library\Auth\Confirmation\ConfirmationBroker
+     * @return \Kaoken\LaravelConfirmation\ConfirmationBroker
      */
     public function broker($name = null)
     {
@@ -55,7 +54,7 @@ class ConfirmationBrokerManager implements FactoryContract
      * Resolve the given broker.
      *
      * @param  string  $name
-     * @return \App\Library\Auth\Confirmation\ConfirmationBroker
+     * @return \Kaoken\LaravelConfirmation\ConfirmationBroker
      *
      * @throws \InvalidArgumentException
      */

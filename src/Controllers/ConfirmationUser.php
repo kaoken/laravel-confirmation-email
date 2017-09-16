@@ -53,7 +53,7 @@ trait ConfirmationUser
     {
         if( !($email == "" || $token == "") ){
             /**
-             * @var \App\Library\Auth\Confirmation\ConfirmationBroker
+             * @var \Kaoken\LaravelConfirmation\ConfirmationBroker
              */
             $obj = Confirmation::broker($this->broker);
             switch ($obj->registration($email, $token)){
