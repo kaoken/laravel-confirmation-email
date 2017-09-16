@@ -67,7 +67,17 @@ class ConfirmationDB
         $this->expires = $expires;
         $this->connection = $connection;
     }
-
+    /**
+     * Contextification of error messages
+     * @param Exception $e
+     * @return array
+     */
+    function err_context(\Exception $e)
+    {
+        return ["msg"=>$e->getMessage(),
+            "file"=>$e->getFile(),
+            "code"=>$e->getCode()];
+    }
     /**
      * Create a new token and Auth user.
      *
@@ -91,7 +101,7 @@ class ConfirmationDB
             if( $e->getCode() === 422 ){
                 return IConfirmationBroker::EXISTS_USER;
             }else{
-                Log::error("ConfirmationDB::create user create Fail!!\n",$e->getMessage());
+                Log::error("ConfirmationDB::create user create Fail!!\n",$this->err_context($e));
             }
             return IConfirmationBroker::INVALID_USER;
         }
@@ -106,7 +116,7 @@ class ConfirmationDB
             }
         }catch(Exception $e){
             $this->connection->rollback();
-            Log::error("ConfirmationDB::create token insert Fail!!\n",$e->getMessage());
+            Log::error("ConfirmationDB::create token insert Fail!!\n",$this->err_context($e));
             return IConfirmationBroker::INVALID_CONFIRMATION;
         }
         $this->connection->commit();
@@ -219,17 +229,12 @@ class ConfirmationDB
             $isError = false;
             switch ($e->getMessage()){
                 case IConfirmationBroker::INVALID_TOKEN:
-                    //$msg = "Already there is no token.";
                     break;
                 case IConfirmationBroker::INVALID_USER:
-                    $msg = 'Already delete a user[table:'.$userTbl.',email:'.$email.'].';
-                    $isError = true;
                     break;
                 default:
-                    $isError = true;
-                    $msg = $e->getMessage();
+                    Log::error("ConfirmationDB::delete Fail!!\n".$this->err_context($e));
             }
-            if( $isError ) Log::error("ConfirmationDB::delete Fail!!\n".$msg);
             return $e->getMessage();
         }
         event(new RegistrationEvent($user));
@@ -271,7 +276,7 @@ class ConfirmationDB
             $this->connection->commit();
         }catch(Exception $e){
             $this->connection->rollback();
-            Log::error("ConfirmationDB::deleteUserAndToken Fail!!\n".$e->getMessage());
+            Log::error("ConfirmationDB::deleteUserAndToken Fail!!\n".$this->err_context($e));
         }
         return $ret;
     }
