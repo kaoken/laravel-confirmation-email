@@ -5,6 +5,7 @@ namespace Kaoken\LaravelConfirmation;
 use DB;
 use Closure;
 use Illuminate\Mail\PendingMail;
+use Kaoken\LaravelConfirmation\Events\ConfirmationEvent;
 
 class ConfirmationBroker implements IConfirmationBroker
 {
@@ -91,13 +92,15 @@ class ConfirmationBroker implements IConfirmationBroker
     public function createUserAndSendConfirmationLink(array $all)
     {
         switch (($token = $this->db->create($all))) {
-            case static::USER_FIND:
+            case static::EXISTS_USER:
             case static::INVALID_USER:
             case static::INVALID_CONFIRMATION:
             return $token;
         }
 
-        $this->emailConfirmationLink($this->db->getUser($all['email']), $token);
+        $user = $this->db->getUser($all['email']);
+        $this->emailConfirmationLink($user, $token);
+        event(new ConfirmationEvent($user));
 
         return static::CONFIRMATION_LINK_SENT;
     }

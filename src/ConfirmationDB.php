@@ -4,6 +4,8 @@ namespace Kaoken\LaravelConfirmation;
 
 use DB;
 use Kaoken\LaravelConfirmation\Events\ConfirmationEvent;
+use Kaoken\LaravelConfirmation\Events\BeforeCreateUserEvent;
+use Kaoken\LaravelConfirmation\Events\CreatedUserEvent;
 use Kaoken\LaravelConfirmation\Events\RegistrationEvent;
 use Log;
 use \Exception;
@@ -78,9 +80,8 @@ class ConfirmationDB
         $user = null;
         $this->connection->beginTransaction();
         try{
-            if (is_null($user = ($this->model)::create($data))){
-                throw new Exception();
-            }
+            event(new BeforeCreateUserEvent($data));
+            $user = ($this->model)::create($data);
         }catch(Exception $e){
             $this->connection->rollback();
             Log::error('ConfirmationDB::create user create Fail!!');
@@ -100,9 +101,8 @@ class ConfirmationDB
             Log::error('ConfirmationDB::create token insert Fail!!');
             return IConfirmationBroker::INVALID_CONFIRMATION;
         }
-
         $this->connection->commit();
-        event(new ConfirmationEvent($user));
+        event(new CreatedUserEvent($user));
         return $token;
     }
 

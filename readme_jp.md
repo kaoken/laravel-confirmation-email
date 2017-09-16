@@ -11,6 +11,7 @@ __コンテンツの一覧__
 
 - [インストール](#インストール)
 - [設定](#設定)
+- [イベント](#イベント)
 - [ライセンス](#ライセンス)
 
 ## インストール
@@ -126,6 +127,25 @@ php artisan migrate
 ```
 
 
+## イベント
+`vendor\kaoken\laravel-confirmation-email\src\Events`ディレクトリ内を参照!  
+
+#### BeforeCreateUserEvent
+ユーザーが作成される前に呼び出されます。  
+**注意**： このイベントが呼び出されると、Authユーザー作成に関連するDBトランザクションが進行中です。  
+リスナーで例外を作成すると、ターゲットのAuthユーザー作成が直ちにロールバックされます。  
+
+#### CreatedUserEvent
+Authユーザーが作成された後に呼び出されます。  
+
+#### ConfirmationEvent
+確認メールを送信した後、認証ユーザーが作成されて呼び出されます。  
+
+#### RegistrationEvent
+Authユーザーが本登録した後に呼び出されます。
+
+
+
 ## ライセンス
 
-[MIT](https://github.com/markdown-it/markdown-it/blob/master/LICENSE)
+[MIT](https://github.com/kaoken/laravel-confirmation-email/blob/master/LICENSE.txt)

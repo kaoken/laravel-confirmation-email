@@ -1,6 +1,6 @@
 <?php
 /**
- * Events to use when a certain user is registered
+ * Called after Auth user  is complete registered.
  */
 namespace Kaoken\LaravelConfirmation\Events;
 
@@ -24,15 +24,5 @@ class RegistrationEvent
     public function __construct($user)
     {
         $this->user = $user;
-    }
-
-    /**
-     * Get the channels the event should be broadcast on.
-     *
-     * @return array
-     */
-    public function broadcastOn()
-    {
-        return [];
     }
 }

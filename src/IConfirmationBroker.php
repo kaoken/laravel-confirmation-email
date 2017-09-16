@@ -11,7 +11,7 @@ interface IConfirmationBroker
      *
      * @var string
      */
-    const USER_FIND = 'confirmations.find';
+    const EXISTS_USER = 'user.already.exists';
 
     /**
      * A constant that represents a notification sent successfully.

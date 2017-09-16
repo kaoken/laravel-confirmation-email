@@ -1,13 +1,13 @@
 <?php
 /**
- * An Auth user is created and called after sending the confirmation mail.
+ * Called after Auth user is created.
  */
 namespace Kaoken\LaravelConfirmation\Events;
 
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class ConfirmationEvent
+class CreatedUserEvent
 {
     use SerializesModels;
     /**
@@ -19,7 +19,7 @@ class ConfirmationEvent
     /**
      * Create a new event instance.
      *
-     * @param $user Auth user Model
+     * @param object $user Auth user model
      */
     public function __construct($user)
     {
