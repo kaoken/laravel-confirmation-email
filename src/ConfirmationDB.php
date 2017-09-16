@@ -80,10 +80,19 @@ class ConfirmationDB
         $this->connection->beginTransaction();
         try{
             event(new BeforeCreateUserEvent($data));
+            $user = ($this->model)::where('email',$data['email'])
+                    ->lockForUpdate()
+                    ->first();
+            if( !is_null($user))
+                throw new Exception("A mail address that already exists.\n",422);
             $user = ($this->model)::create($data);
         }catch(Exception $e){
             $this->connection->rollback();
-            Log::error('ConfirmationDB::create user create Fail!!');
+            if( $e->getCode() === 422 ){
+                return IConfirmationBroker::EXISTS_USER;
+            }else{
+                Log::error("ConfirmationDB::create user create Fail!!\n",$e->getMessage());
+            }
             return IConfirmationBroker::INVALID_USER;
         }
 
@@ -97,7 +106,7 @@ class ConfirmationDB
             }
         }catch(Exception $e){
             $this->connection->rollback();
-            Log::error('ConfirmationDB::create token insert Fail!!');
+            Log::error("ConfirmationDB::create token insert Fail!!\n",$e->getMessage());
             return IConfirmationBroker::INVALID_CONFIRMATION;
         }
         $this->connection->commit();
