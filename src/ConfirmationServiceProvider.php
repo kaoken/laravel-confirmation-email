@@ -66,12 +66,12 @@ class ConfirmationServiceProvider extends ServiceProvider
      */
     protected function registerConfirmationBroker()
     {
-        $this->app->singleton('auth.confirmation', function ($app) {
+        $this->app->singleton('auth.kaoken.confirmation', function ($app) {
             return new ConfirmationBrokerManager($app);
         });
 
-        $this->app->bind('auth.confirmation.broker', function ($app) {
-            return $app->make('auth.confirmation')->broker();
+        $this->app->bind('auth.kaoken.confirmation.broker', function ($app) {
+            return $app->make('auth.kaoken.confirmation')->broker();
         });
     }
 
@@ -82,6 +82,6 @@ class ConfirmationServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['auth.confirmation', 'auth.confirmation.broker'];
+        return ['auth.kaoken.confirmation', 'auth.kaoken.confirmation.broker'];
     }
 }
