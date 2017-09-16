@@ -1,6 +1,6 @@
 <?php
 
-namespace kaoken\LaravelConfirmation;
+namespace Kaoken\LaravelConfirmation;
 
 use Illuminate\Support\ServiceProvider;
 

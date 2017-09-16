@@ -1,6 +1,6 @@
 <?php
 
-namespace kaoken\LaravelConfirmation\Controllers;
+namespace Kaoken\LaravelConfirmation\Controllers;
 
 use DB;
 use Confirmation;
@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 /**
  * Trait AuthenticatesUsers
  * @see \Illuminate\Foundation\Auth\AuthenticatesUsers
- * @package kaoken\LaravelConfirmation\Controllers
+ * @package Kaoken\LaravelConfirmation\Controllers
  */
 trait AuthenticatesUsers
 {

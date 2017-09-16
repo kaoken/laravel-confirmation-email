@@ -2,7 +2,7 @@
 /**
  * Events to use when a certain user is registered
  */
-namespace kaoken\LaravelConfirmation\Events;
+namespace Kaoken\LaravelConfirmation\Events;
 
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;

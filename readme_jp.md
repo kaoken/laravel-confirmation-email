@@ -65,8 +65,8 @@ Authユーザーが`users`の場合
         'users' => [
             'model' => App\User::class,
             'path' => 'user/register/',
-            'email_confirmation' => kaoken\LaravelConfirmation\Mail\ConfirmationMailToUser::class,
-            'email_registration' => kaoken\LaravelConfirmation\Mail\RegistrationMailToUser::class,
+            'email_confirmation' => Kaoken\LaravelConfirmation\Mail\ConfirmationMailToUser::class,
+            'email_registration' => Kaoken\LaravelConfirmation\Mail\RegistrationMailToUser::class,
             'table' => 'confirmation_users',
             'expire' => 24,
         ]
@@ -121,6 +121,10 @@ php artisan migrate
 ```
 
 ### コントローラー
+```php
+
+```
+
 
 ## ライセンス
 

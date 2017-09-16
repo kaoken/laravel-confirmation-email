@@ -1,6 +1,6 @@
 <?php
 
-namespace kaoken\LaravelConfirmation;
+namespace Kaoken\LaravelConfirmation;
 
 use DB;
 use Closure;
@@ -17,7 +17,7 @@ class ConfirmationBroker implements IConfirmationBroker
     /**
      * ConfirmationDB instance.
      *
-     * @var \kaoken\LaravelConfirmation\ConfirmationDB
+     * @var \Kaoken\LaravelConfirmation\ConfirmationDB
      */
     protected $db;
     /**

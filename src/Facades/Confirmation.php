@@ -1,6 +1,6 @@
 <?php
 
-namespace kaoken\LaravelConfirmation\Facades;
+namespace Kaoken\LaravelConfirmation\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

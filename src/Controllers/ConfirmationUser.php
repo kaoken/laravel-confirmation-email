@@ -2,7 +2,7 @@
 /**
  *
  */
-namespace kaoken\LaravelConfirmation\Controllers;
+namespace Kaoken\LaravelConfirmation\Controllers;
 
 use Confirmation;
 use Illuminate\Http\Request;

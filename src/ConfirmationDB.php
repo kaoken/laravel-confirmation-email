@@ -1,10 +1,10 @@
 <?php
 
-namespace kaoken\LaravelConfirmation;
+namespace Kaoken\LaravelConfirmation;
 
 use DB;
-use kaoken\LaravelConfirmation\Events\ConfirmationEvent;
-use kaoken\LaravelConfirmation\Events\RegistrationEvent;
+use Kaoken\LaravelConfirmation\Events\ConfirmationEvent;
+use Kaoken\LaravelConfirmation\Events\RegistrationEvent;
 use Log;
 use \Exception;
 use Carbon\Carbon;

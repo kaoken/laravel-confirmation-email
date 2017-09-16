@@ -2,7 +2,7 @@
 /**
  *
  */
-namespace kaoken\LaravelConfirmation\Events;
+namespace Kaoken\LaravelConfirmation\Events;
 
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
