@@ -2,7 +2,7 @@
 Laravelでユーザー仮登録後に確認メールを送り、指定アドレスにアクセス後に本登録が行われる。
 
 [![TeamCity (simple build status)](https://img.shields.io/codeship/d6c1ddd0-16a3-0132-5f85-2e35c05e22b1.svg)]()
-[![composer version](https://img.shields.io/badge/version-0.0.0-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
+[![composer version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
 [![licence](https://img.shields.io/badge/licence-MIT-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
 [![laravel version](https://img.shields.io/badge/Laravel%20version-≧5.5-red.svg)](https://github.com/kaoken/laravel-confirmation-email)
 
@@ -48,7 +48,7 @@ composer install kaoken/laravel-confirmation-email
 ```
 
 ### config\auth.phpへ追加する例
-Authユーザーが`users`の場合
+Authユーザーが`users`の場合(**必ず名前は、テーブル名にすること**)
 
 
 - `model`は、ユーザーモデルクラス
@@ -93,9 +93,8 @@ php artisan vendor:publish --tag=confirmation
     * **`vendor`**
       * **`confirmation`**
         * **`mail`**
-          * **`text`**
-            * `confirmation.blade.php`
-            * `registration.blade.php`
+          * `confirmation.blade.php`
+          * `registration.blade.php`
   * `registration.blade.php`
      
 ### マイグレーション
@@ -121,7 +120,26 @@ php artisan migrate
     }
 ```
 
+### `.env`
+* `CONFIRMATION_FROM_EMAIL` は、返信先のメールアドレス。デフォルトで、デフォルトのメールアドレスになる。
+* `CONFIRMATION_FROM_NAME` は、返信先の名前。デフォルトで`webmaster`になる。
+
+
+### メール
+上記設定のコンフィグ`config\auth.php`の場合、
+`email_confirmation`の`Kaoken\LaravelConfirmation\Mail\ConfirmationMailToUser`は、
+仮登録時に確認メールとして使用する。テンプレートは、`views\vendor\confirmation\confirmation.blade.php`
+を使用している。  
+  
+`email_registration`の`Kaoken\LaravelConfirmation\Mail\RegistrationMailToUser`は、
+本登録をしたことを知らせるメールとして使用する。テンプレートは、`views\vendor\confirmation\registration.blade.php`
+を使用している。
+
+
+
+
 ### コントローラー
+仮登録、本登録、ログインの例
 ```php
 
 ```

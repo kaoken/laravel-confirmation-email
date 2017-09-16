@@ -31,7 +31,7 @@ class ConfirmationMailToUser extends Mailable
      *
      * @param object $model User model derived from `Model` class
      * @param string $token token
-     * @param string $registerUrl URL
+     * @param string $registerUrl URL for complete registration
      */
     public function __construct($model, string $token, string $registerUrl)
     {
@@ -46,9 +46,13 @@ class ConfirmationMailToUser extends Mailable
      */
     public function build()
     {
-        return $this->text('vendor.confirmation.mail.text.confirmation')
+        $m = $this->text('vendor.confirmation.mail.confirmation')
             ->subject(__('confirmation.email_registration_subject'))
-            ->from(env('CONFIRMATION_FROM_EMAIL',''), $this->model->name)
+            ->to($this->model->email, $this->model->name)
             ->with(['user'=>$this->model, 'token'=>$this->token, 'registerUrl'=>$this->registerUrl]);
+        if( filter_var(env('CONFIRMATION_FROM_EMAIL'), FILTER_VALIDATE_EMAIL))
+            $m->from(env('CONFIRMATION_FROM_EMAIL',''), env('CONFIRMATION_FROM_NAME','webmaster'));
+
+        return $m;
     }
 }

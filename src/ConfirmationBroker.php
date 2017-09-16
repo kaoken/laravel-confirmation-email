@@ -171,11 +171,11 @@ class ConfirmationBroker implements IConfirmationBroker
 
 
     /**
-     * Is it an authenticated email address?
+     * Is it an confirmed email address?
      * @param string $email
-     * @return bool Returns true if it exists.
+     * @return bool If true, it is confirmed.
      */
-    public function authenticated($email)
+    public function confirmed($email)
     {
         return !$this->db->existenceEmail($email);
     }

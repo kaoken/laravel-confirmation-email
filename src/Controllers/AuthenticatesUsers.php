@@ -35,7 +35,7 @@ trait AuthenticatesUsers
         $user = DB::table($model->getTable())->where('email',$all['email']);
         if( is_null($user) ) return false;
 
-        if( !Confirmation::broker($this->broker)->authenticated($user->email) ) return false;
+        if( !Confirmation::broker($this->broker)->confirmed($user->email) ) return false;
 
         return $this->guard()->attempt( $this->credentials($request), $request->has('remember')) ;
     }

@@ -32,9 +32,13 @@ class RegistrationMailToUser extends Mailable
      */
     public function build()
     {
-        return $this->text('vendor.confirmation.mail.text.registration')
+        $m= $this->text('vendor.confirmation.mail.registration')
             ->subject(__('confirmation.email_confirmation_subject'))
-            ->from(env('CONFIRMATION_FROM_EMAIL',''), $this->model->name)
+            ->to($this->model->email, $this->model->name)
             ->with('user',$this->model);
+
+        if( filter_var(env('CONFIRMATION_FROM_EMAIL'), FILTER_VALIDATE_EMAIL))
+            $m->from(env('CONFIRMATION_FROM_EMAIL',''), env('CONFIRMATION_FROM_NAME','webmaster'));
+        return $m;
     }
 }
