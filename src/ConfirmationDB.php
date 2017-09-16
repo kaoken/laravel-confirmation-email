@@ -3,7 +3,6 @@
 namespace Kaoken\LaravelConfirmation;
 
 use DB;
-use Kaoken\LaravelConfirmation\Events\ConfirmationEvent;
 use Kaoken\LaravelConfirmation\Events\BeforeCreateUserEvent;
 use Kaoken\LaravelConfirmation\Events\CreatedUserEvent;
 use Kaoken\LaravelConfirmation\Events\RegistrationEvent;

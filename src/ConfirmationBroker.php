@@ -4,7 +4,7 @@ namespace Kaoken\LaravelConfirmation;
 
 use DB;
 use Closure;
-use Illuminate\Mail\PendingMail;
+use Illuminate\Mail\Mailer;
 use Kaoken\LaravelConfirmation\Events\ConfirmationEvent;
 
 class ConfirmationBroker implements IConfirmationBroker
@@ -61,16 +61,16 @@ class ConfirmationBroker implements IConfirmationBroker
      * @param  ConfirmationDB $db
      * @param  $model
      * @param  string $path
-     * @param  PendingMail  $mailer
+     * @param  Mailer  $mailer
      * @param  string  $emailConfirmationClass
      * @param  string  $emailConfirmationClass
      */
     public function __construct(
         array $config,
         ConfirmationDB $db,
-        $model,
+        string $model,
         string $path,
-        PendingMail $mailer,
+        Mailer $mailer,
         string $emailConfirmationClass,
         string  $emailRegistrationClass)
     {
