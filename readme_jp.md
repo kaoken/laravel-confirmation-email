@@ -141,9 +141,71 @@ php artisan migrate
 ### コントローラー
 仮登録、本登録、ログインの例
 ```php
+<?php
+namespace App\Http\Controllers;
+use App\User;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Foundation\Auth\RegistersUsers;
+use Kaoken\LaravelConfirmation\Controllers\AuthenticatesUsers;
+use Kaoken\LaravelConfirmation\Controllers\ConfirmationUser;
 
+class RegisterUserController extends Controller
+{
+    use AuthenticatesUsers, ConfirmationUser;
+    /**
+     * Authユーザーモデルクラスを取得する
+     * @return string
+     */
+    protected function getAuthUserClass() { return User::class; }
+    /**
+     * 仮登録画面
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function getFirstRegister()
+    {
+        // 各自で用意する
+        return view('first_step_register');
+    }
+    
+    /**
+     * ユーザーの仮登録をする
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|mixed
+     */
+    public function postFirstRegister(Request $request)
+    {
+        $all = $request->only(['name', 'email', 'password']);
+        $validator = Validator::make($all,[
+            'name' => 'required|max:24',
+            'email' => 'required|unique:users,email|max:255|email',
+            'password' => 'required|between:6,32'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('first_register')
+                ->withErrors($validator)
+                ->withInput();
+        }
+        $all['password'] = bcrypt($all['password']);
+
+        // 仮登録をする
+        if ( !$this->createUserAndSendConfirmationLink($all) ) {
+            return redirect('first_register')
+                            ->withErrors(['confirmation'=>'仮登録に失敗しました。']);
+        }
+        // 仮登録を知らせるページへ移動
+        return redirect('first_register_ok');
+    }
+}
 ```
-
+### ルート
+上記コントローラより
+```php
+        Route::get('register', 'AuthController@getFirstRegister');
+        Route::post('register', 'AuthController@postFirstRegister');
+        Route::get('register/{email}/{token}', 'AuthController@getRegistration');
+```
 
 ## イベント
 `vendor\kaoken\laravel-confirmation-email\src\Events`ディレクトリ内を参照!  

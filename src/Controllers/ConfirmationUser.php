@@ -26,15 +26,17 @@ trait ConfirmationUser
 
     /**
      * complete registration view name
+     * @see ConfirmationUser::getCompleteRegistration
      * @return string
      */
-    protected function registrationView()
+    protected function completeRegistrationView()
     {
         return 'vendor.confirmation.registration';
     }
 
     /**
      * View name when no registered user exists or is registered
+     * @see ConfirmationUser::getCompleteRegistration
      * @return string
      */
     protected function registration404View()
@@ -49,7 +51,7 @@ trait ConfirmationUser
      * @param string $token
      * @return \Illuminate\Http\Response
      */
-    public function getRegistration(Request $request, $email, $token)
+    public function getCompleteRegistration(Request $request, $email, $token)
     {
         if( !($email == "" || $token == "") ){
             /**
@@ -58,9 +60,10 @@ trait ConfirmationUser
             $obj = Confirmation::broker($this->broker);
             switch ($obj->registration($email, $token)){
                 case Confirmation::REGISTRATION:
-                    return response()->view($this->registrationView());
+                    return response()->view($this->completeRegistrationView());
             }
         }
+        // For combinations of tokens and e-mails already confirmed or not present, 404.
         return response()->view($this->registration404View(), [], 404);
     }
 }
