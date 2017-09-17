@@ -62,8 +62,8 @@ class ConfirmationBroker implements IConfirmationBroker
      * @param  $model
      * @param  string $path
      * @param  Mailer  $mailer
-     * @param  string  $emailConfirmationClass
-     * @param  string  $emailConfirmationClass
+     * @param  string  $emailConfirmationClass  hoge::class
+     * @param  string  $emailRegistrationClass  hoge::class
      */
     public function __construct(
         array $config,
@@ -72,7 +72,7 @@ class ConfirmationBroker implements IConfirmationBroker
         string $path,
         Mailer $mailer,
         string $emailConfirmationClass,
-        string  $emailRegistrationClass)
+        string $emailRegistrationClass)
     {
         $this->config = $config;
         $this->db = $db;

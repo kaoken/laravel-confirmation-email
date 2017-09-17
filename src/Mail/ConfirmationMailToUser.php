@@ -21,7 +21,7 @@ class ConfirmationMailToUser extends Mailable
      */
     protected $token;
     /**
-     * token
+     * Completely registered URL
      * @var string
      */
     protected $registerUrl;
@@ -31,7 +31,7 @@ class ConfirmationMailToUser extends Mailable
      *
      * @param object $model User model derived from `Model` class
      * @param string $token token
-     * @param string $registerUrl URL for complete registration
+     * @param string $registerUrl Completely registered URL
      */
     public function __construct($model, string $token, string $registerUrl)
     {

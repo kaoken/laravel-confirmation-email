@@ -148,18 +148,26 @@ php artisan migrate
 ## イベント
 `vendor\kaoken\laravel-confirmation-email\src\Events`ディレクトリ内を参照!  
 
-#### BeforeCreateUserEvent
+#### `BeforeCreateUserEvent`
 ユーザーが作成される前に呼び出されます。  
-**注意**： このイベントが呼び出されると、Authユーザー作成に関連するDBトランザクションが進行中です。  
-リスナーで例外を作成すると、ターゲットのAuthユーザー作成が直ちにロールバックされます。  
+**注意**： このイベントが呼び出されると、Authユーザー作成に関連するDBトランザクションが進行中。  
+リスナーで例外を作成すると、ターゲットのAuthユーザー作成が直ちにロールバックされる。  
 
-#### CreatedUserEvent
+#### `BeforeDeleteUsersEvent`
+期限切れのユーザーを削除する前に呼び出される。  
+これは、`Confirmation::broker('hoge')->deleteUserAndToken();`のメソッドの引数を`true`に`deleteUserAndToken(true)`した
+場合のみ呼び出される。
+**注意**： このイベントが呼び出されると、期限切れAuthユーザー削除に関連するDBトランザクションが進行中。  
+リスナーで例外を作成すると、ターゲットのAuthユーザー削除が直ちにロールバックされる。  
+
+
+#### `CreatedUserEvent`
 Authユーザーが作成された後に呼び出されます。  
 
-#### ConfirmationEvent
+#### `ConfirmationEvent`
 確認メールを送信した後、認証ユーザーが作成されて呼び出されます。  
 
-#### RegistrationEvent
+#### `RegistrationEvent`
 Authユーザーが本登録した後に呼び出されます。
 
 

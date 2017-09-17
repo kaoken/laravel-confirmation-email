@@ -4,6 +4,7 @@ namespace Kaoken\LaravelConfirmation;
 
 use DB;
 use Kaoken\LaravelConfirmation\Events\BeforeCreateUserEvent;
+use Kaoken\LaravelConfirmation\Events\BeforeDeleteUsersEvent;
 use Kaoken\LaravelConfirmation\Events\CreatedUserEvent;
 use Kaoken\LaravelConfirmation\Events\RegistrationEvent;
 use Log;
@@ -199,7 +200,7 @@ class ConfirmationDB
 
         try{
             $this->connection->beginTransaction();
-            $user = (new $this->model)::where('email', '=', $email)->first();
+            $user = ($this->model)::where('email', '=', $email)->first();
 
             $userTbl = $user->getTable();
 
@@ -251,15 +252,25 @@ class ConfirmationDB
      *      )->hourly();
      *  }
      *
+     * @param bool $deletionEventOccurred
      * @return int Number of deleted users.
      */
-    public function deleteUserAndToken()
+    public function deleteUserAndToken($deletionEventOccurred=false)
     {
         $ret = 0;
         try{
             $this->connection->beginTransaction();
             $userTbl = with(new $this->model)->getTable();
             $expiredAt = Carbon::now()->subHour($this->expires);
+
+            if($deletionEventOccurred){
+                $users = ($this->model)::lockForUpdate()
+                    ->join($this->table, $this->table.'.email', '=', $userTbl.'.email')
+                    ->where($this->table.'.created_at', '<', $expiredAt)
+                    ->get();
+                if( $users->count() > 0 )
+                    event(new BeforeDeleteUsersEvent($users));
+            }
 
             // Delete expired Auth users
             $ret=$this->connection->table($userTbl)

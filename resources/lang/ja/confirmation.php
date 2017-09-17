@@ -12,7 +12,7 @@ return [
     'email_confirmation_subject' => '登録確認のお願い。',
     'email_registration_subject' => '本登録が終了しました。',
     'msg_first_registration' => '仮登録が狩猟しました。',
-    'msg_second_registration' => 'Registration has ended.',
+    'msg_second_registration' => '登録が終了しました。',
     'msg_move_url' => '登録を完了するには、以下のアドレスをクリックしてください。',
     'msg_user_delete' => '24時間後に削除されます。 有効期限が切れた場合は再登録してください。',
     'msg_note' => 'このメールに返信することはできませんのでご注意ください。 お問い合わせは Hoge サイトの「お問い合わせ」からご連絡ください。'

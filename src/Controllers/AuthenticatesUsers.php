@@ -29,7 +29,7 @@ trait AuthenticatesUsers
     protected function attemptLogin(Request $request)
     {
         $all = $request->all();
-        $class = $this->getUserClass();
+        $class = $this->getAuthUserClass();
 
         $model = $this->guard()->getProvider()->getModel();
         $user = DB::table($model->getTable())->where('email',$all['email']);

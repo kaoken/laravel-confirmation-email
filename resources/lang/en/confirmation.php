@@ -9,7 +9,7 @@ return [
     | the confirmation class. Please add or edit these messages to suit the application you develop.
     |
     */
-    'email_confirmation_subject' => 'Email verification',
+    'email_confirmation_subject' => 'Email confirmation',
     'email_registration_subject' => 'Registration has ended.',
     'msg_first_registration' => 'The first registration has ended.',
     'msg_second_registration' => 'Registration has ended.',
