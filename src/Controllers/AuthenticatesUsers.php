@@ -16,11 +16,6 @@ trait AuthenticatesUsers
     use \Illuminate\Foundation\Auth\AuthenticatesUsers;
 
     /**
-     * Get the Auth user model class
-     * @return string
-     */
-    abstract protected function getAuthUserClass();
-    /**
      * Attempt to log the user into the application.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -29,13 +24,10 @@ trait AuthenticatesUsers
     protected function attemptLogin(Request $request)
     {
         $all = $request->all();
-        $class = $this->getAuthUserClass();
 
         $model = $this->guard()->getProvider()->getModel();
-        $user = DB::table($model->getTable())->where('email',$all['email']);
-        if( is_null($user) ) return false;
-
-        if( !Confirmation::broker($this->broker)->confirmed($user->email) ) return false;
+        $tbl = (new $model())->getTable();
+        if( !Confirmation::broker($tbl)->confirmed($all['email']) ) return false;
 
         return $this->guard()->attempt( $this->credentials($request), $request->has('remember')) ;
     }
