@@ -1,6 +1,6 @@
-@lang('confirmation.msg_second_registration')
+{{__('confirmation.msg_second_registration')}}
 
-※@lang('confirmation.msg_note')
+※ {{__('confirmation.msg_note')}}
 
 
 ──────────────────────────────────　
