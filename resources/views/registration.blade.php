@@ -20,8 +20,13 @@
             <div class="col-md-10 col-md-offset-1">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <h1>__('confirmation.welcome');</h1>
-                        __('confirmation.welcome');
+                        <h1>@lang('confirmation.welcome_title')</h1>
+                        @lang('confirmation.welcome_body')
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <a class="btn btn-primary" href="{{url('/')}}">Home</a>
                     </div>
                 </div>
             </div>

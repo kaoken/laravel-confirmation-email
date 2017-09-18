@@ -1,7 +1,7 @@
 # laravel-confirmation-email
 Laravelでユーザー仮登録後に確認メールを送り、指定アドレスにアクセス後に本登録が行われる。
 
-[![TeamCity (simple build status)](https://img.shields.io/codeship/d6c1ddd0-16a3-0132-5f85-2e35c05e22b1.svg)]()
+[![Travis](https://img.shields.io/travis/rust-lang/rust.svg)]()
 [![composer version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
 [![licence](https://img.shields.io/badge/licence-MIT-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
 [![laravel version](https://img.shields.io/badge/Laravel%20version-≧5.5-red.svg)](https://github.com/kaoken/laravel-confirmation-email)
@@ -23,6 +23,7 @@ composer install kaoken/laravel-confirmation-email
 ```
 
 または、`composer.json`へ追加
+
 ```json 
   "require": {
     ...
@@ -32,8 +33,9 @@ composer install kaoken/laravel-confirmation-email
 
 ## 設定
 
-### **`config\app.php` に以下のように追加：**
-``` config\app.php
+### **`config\app.php`** に以下のように追加：
+
+```php
     'providers' => [
         ...
         // 追加
@@ -47,21 +49,22 @@ composer install kaoken/laravel-confirmation-email
     ],
 ```
 
-### config\auth.phpへ追加する例
+### **`config\auth.php`**へ追加する例
 Authユーザーが`users`の場合(**必ず名前は、テーブル名にすること**)
 
 
 - `model`は、ユーザーモデルクラス
-- `path`は、トークを使用した登録時に使用するURLの途中パス(例：`http(s):://hoge.com/{path}/{token}`)
+- `path`は、トークを使用した登録時に使用するURLの途中パス(例：`http(s):://hoge.com/{path}/{email}/{token}`)
 - `provider`は、ユーザーのテーブル名
 - `email_confirmation`は、[Mailable](https://readouble.com/laravel/5.5/ja/mail)で派生したクラスを必要に応じて変更すること。
-確認メールを送るときに使用する。
+確認メールを送るときに使用する。  
+  
 - `email_registration`は、[Mailable](https://readouble.com/laravel/5.5/ja/mail)で派生したクラスを必要に応じて変更すること。
 登録が終了したときに送るメール。
 - `table`は、このサービスで使用するテーブル名
 - `expire`は、登録後にX時間操作しない場合、仮登録したユーザーが削除される時間
 
-``` config\auth.php
+```php
     'confirmations' => [
         'users' => [
             'model' => App\User::class,
@@ -129,11 +132,11 @@ php artisan migrate
 上記設定のコンフィグ`config\auth.php`の場合、
 `email_confirmation`の`Kaoken\LaravelConfirmation\Mail\ConfirmationMailToUser`は、
 仮登録時に確認メールとして使用する。テンプレートは、`views\vendor\confirmation\confirmation.blade.php`
-を使用している。  
+を使用している。アプリの仕様に合わせて変更すること。
   
 `email_registration`の`Kaoken\LaravelConfirmation\Mail\RegistrationMailToUser`は、
 本登録をしたことを知らせるメールとして使用する。テンプレートは、`views\vendor\confirmation\registration.blade.php`
-を使用している。
+を使用している。アプリの仕様に合わせて変更すること。
 
 
 
@@ -146,18 +149,19 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Foundation\Auth\RegistersUsers;
 use Kaoken\LaravelConfirmation\Controllers\AuthenticatesUsers;
 use Kaoken\LaravelConfirmation\Controllers\ConfirmationUser;
 
 class RegisterUserController extends Controller
 {
     use AuthenticatesUsers, ConfirmationUser;
+    
     /**
-     * Authユーザーモデルクラスを取得する
-     * @return string
+     * AuthenticatesUsers トレイトで使用する 
+     * @var string
      */
-    protected function getAuthUserClass() { return User::class; }
+    protected $broker = 'users';
+
     /**
      * 仮登録画面
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -199,38 +203,84 @@ class RegisterUserController extends Controller
     }
 }
 ```
+`$broker`は、必ず記述すること。
+
 ### ルート
 上記コントローラより
+
 ```php
-        Route::get('register', 'AuthController@getFirstRegister');
-        Route::post('register', 'AuthController@postFirstRegister');
-        Route::get('register/{email}/{token}', 'AuthController@getRegistration');
+Route::group([
+    'middleware' => ['guest:user'] ],
+    function(){
+        Route::get('login', 'AuthController@login');
+    }
+);
+Route::get('register', 'AuthController@getFirstRegister');
+Route::post('register', 'AuthController@postFirstRegister');
+Route::get('register/{email}/{token}', 'AuthController@getCompleteRegistration');
 ```
+### Auth Model
+Authユーザーモデルの例  
+`Kaoken\LaravelConfirmation\HasConfirmation;`を追加する。
+```php
+<?php
+
+namespace App;
+use Kaoken\LaravelConfirmation\HasConfirmation;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+class User extends Authenticatable
+{
+    use Notifiable, HasConfirmation;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'email', 'password',
+    ];
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password', 'remember_token',
+    ];
+
+}
+```
+
+`confirmed()`メソッドを使用することにより、本登録済みのユーザーかを判定する。  
+`confirmed()`で、ソーシャルログインなどで、追加修正してログイン判定できるようにすると良い。
 
 ## イベント
 `vendor\kaoken\laravel-confirmation-email\src\Events`ディレクトリ内を参照!  
 
 #### `BeforeCreateUserEvent`
-ユーザーが作成される前に呼び出されます。  
+ユーザーが作成される前に呼び出される。  
 **注意**： このイベントが呼び出されると、Authユーザー作成に関連するDBトランザクションが進行中。  
 リスナーで例外を作成すると、ターゲットのAuthユーザー作成が直ちにロールバックされる。  
 
 #### `BeforeDeleteUsersEvent`
 期限切れのユーザーを削除する前に呼び出される。  
 これは、`Confirmation::broker('hoge')->deleteUserAndToken();`のメソッドの引数を`true`に`deleteUserAndToken(true)`した
-場合のみ呼び出される。
+場合のみ呼び出される。  
 **注意**： このイベントが呼び出されると、期限切れAuthユーザー削除に関連するDBトランザクションが進行中。  
 リスナーで例外を作成すると、ターゲットのAuthユーザー削除が直ちにロールバックされる。  
 
 
 #### `CreatedUserEvent`
-Authユーザーが作成された後に呼び出されます。  
+Authユーザーが作成された後に呼び出される。  
 
 #### `ConfirmationEvent`
-確認メールを送信した後、認証ユーザーが作成されて呼び出されます。  
+確認メールを送信した後、認証ユーザーが作成されて呼び出される。  
 
 #### `RegistrationEvent`
-Authユーザーが本登録した後に呼び出されます。
+Authユーザーが本登録した後に呼び出される。  
 
 
 
