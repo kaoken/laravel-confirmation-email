@@ -22,12 +22,6 @@ class ConfirmationBroker implements IConfirmationBroker
      */
     protected $db;
     /**
-     * Middle path of URL
-     *
-     * @var string
-     */
-    protected $path;
-    /**
      * User model
      *
      * @var \Illuminate\Database\Eloquent\Model
@@ -60,7 +54,6 @@ class ConfirmationBroker implements IConfirmationBroker
      * @param  array $config
      * @param  ConfirmationDB $db
      * @param  $model
-     * @param  string $path
      * @param  Mailer  $mailer
      * @param  string  $emailConfirmationClass  hoge::class
      * @param  string  $emailRegistrationClass  hoge::class
@@ -69,14 +62,12 @@ class ConfirmationBroker implements IConfirmationBroker
         array $config,
         ConfirmationDB $db,
         string $model,
-        string $path,
         Mailer $mailer,
         string $emailConfirmationClass,
         string $emailRegistrationClass)
     {
         $this->config = $config;
         $this->db = $db;
-        $this->path = $path;
         $this->model = $model;
         $this->mailer = $mailer;
         $this->emailConfirmationClass = $emailConfirmationClass;
@@ -116,7 +107,7 @@ class ConfirmationBroker implements IConfirmationBroker
     public function emailConfirmationLink($user, $token)
     {
         $class = $this->emailConfirmationClass;
-        $this->mailer->send(new $class($user, $token,url($this->path.urlencode($user->email)."/".$token)));
+        $this->mailer->send(new $class($user, $token));
     }
 
     /**

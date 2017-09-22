@@ -1,7 +1,7 @@
 {{__('confirmation.msg_first_registration')}}
 
 {{__('confirmation.msg_move_url')}}
-{{$registerUrl}}
+{{ secure_url('user/register/'.$user->email.'/'.$token.'/') }}
 
 ・{{__('confirmation.msg_move_url')}}
 ・{{__('confirmation.msg_user_delete')}}

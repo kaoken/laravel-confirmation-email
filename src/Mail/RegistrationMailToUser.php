@@ -5,7 +5,6 @@ namespace Kaoken\LaravelConfirmation\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class RegistrationMailToUser extends Mailable
 {
@@ -14,16 +13,16 @@ class RegistrationMailToUser extends Mailable
     /**
      * @var object
      */
-    protected $model;
+    protected $user;
 
     /**
      * Create a new message instance.
      *
-     * @param object $model User model derived from `Model` class
+     * @param object $user User model derived from `Model` class
      */
-    public function __construct($model)
+    public function __construct($user)
     {
-        $this->model = $model;
+        $this->user = $user;
     }
 
     /**
@@ -34,11 +33,8 @@ class RegistrationMailToUser extends Mailable
     {
         $m= $this->text('vendor.confirmation.mail.registration')
             ->subject(__('confirmation.email_registration_subject'))
-            ->to($this->model->email, $this->model->name)
-            ->with('user',$this->model);
-
-        if( filter_var(env('CONFIRMATION_FROM_EMAIL'), FILTER_VALIDATE_EMAIL))
-            $m->from(env('CONFIRMATION_FROM_EMAIL',''), env('CONFIRMATION_FROM_NAME','webmaster'));
+            ->to($this->user->email, $this->user->name)
+            ->with('user',$this->user);
         return $m;
     }
 }

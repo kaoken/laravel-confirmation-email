@@ -55,6 +55,6 @@ class Confirmation extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'auth.kaoken.confirmation';
+        return 'auth.confirmation';
     }
 }

@@ -2,7 +2,7 @@
 Laravel sends confirmation mail after Auth user first registration, complete registration is done after accessing designated address.
 
 [![Travis](https://img.shields.io/travis/rust-lang/rust.svg)]()
-[![composer version](https://img.shields.io/badge/version-1.0.1-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
+[![composer version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
 [![licence](https://img.shields.io/badge/licence-MIT-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
 [![laravel version](https://img.shields.io/badge/Laravel%20version-≧5.5-red.svg)](https://github.com/kaoken/laravel-confirmation-email)
 
@@ -48,13 +48,33 @@ or, add `composer.json`
         'Confirmation' => Kaoken\LaravelConfirmation\Facades\Confirmation::class
     ],
 ```
-
+  
+or, add `composer.json`  
+  
+```js
+{
+    ...
+    "extra": {
+        "laravel": {
+            "dont-discover": [
+            ],
+            "providers": [
+                "Kaoken\\LaravelConfirmation\\ConfirmationServiceProvider",
+            ],
+            "aliases": {
+                "MailReset": "Kaoken\\LaravelConfirmation\\Facades\\Confirmation"
+            }
+        }
+    },
+    ...
+}
+```
+  
 ### Example of adding to **`config\auth.php`**
 When the Auth user is `users`(**Make sure Auth user name is table name!**)
 
 
 - `model` is a user model class
-- `path` is an intermediate path of the URL used when registering with a token (eg`http(s):://hoge.com/{path}/{email}/{token}`)
 - `provider` is the user table name
 - `email_confirmation` should modify the class derived from[Mailable](https://laravel.com/docs/5.5/mail) as necessary.
 Used to send confirmation mail.
@@ -100,7 +120,7 @@ After execution, the following directories and files are added.
   * `registration.blade.php`
      
 ### Migration
-Migration file `2017_09 _ 14 _ 00000 1 _ create_confirmation_users_ table.php` should be modified as necessary.
+Migration file `2017_09_14_000001_create_confirmation_users_table.php` should be modified as necessary.
 
 
 ```bash
@@ -121,10 +141,6 @@ This is used to delete users who passed 24 hours after 1st registration.
         }
     }
 ```
-
-### `.env`
-* `CONFIRMATION_FROM_EMAIL` is the reply mail address. By default, it becomes the default mail address.
-* `CONFIRMATION_FROM_NAME` is the name of the reply to. It defaults to `webmaster`.
 
 
 ### E-Mail

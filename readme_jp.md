@@ -2,7 +2,7 @@
 Laravelでユーザー仮登録後に確認メールを送り、指定アドレスにアクセス後に本登録が行われる。
 
 [![Travis](https://img.shields.io/travis/rust-lang/rust.svg)]()
-[![composer version](https://img.shields.io/badge/version-1.0.1-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
+[![composer version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
 [![licence](https://img.shields.io/badge/licence-MIT-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
 [![laravel version](https://img.shields.io/badge/Laravel%20version-≧5.5-red.svg)](https://github.com/kaoken/laravel-confirmation-email)
 
@@ -48,13 +48,32 @@ composer install kaoken/laravel-confirmation-email
         'Confirmation' => Kaoken\LaravelConfirmation\Facades\Confirmation::class
     ],
 ```
-
+  
+または、`composer.json`へ追加  
+  
+```js
+{
+    ...
+    "extra": {
+        "laravel": {
+            "dont-discover": [
+            ],
+            "providers": [
+                "Kaoken\\LaravelConfirmation\\ConfirmationServiceProvider",
+            ],
+            "aliases": {
+                "MailReset": "Kaoken\\LaravelConfirmation\\Facades\\Confirmation"
+            }
+        }
+    },
+    ...
+}
+```
 ### **`config\auth.php`**へ追加する例
 Authユーザーが`users`の場合(**必ず名前は、テーブル名にすること**)
 
 
 - `model`は、ユーザーモデルクラス
-- `path`は、トークを使用した登録時に使用するURLの途中パス(例：`http(s):://hoge.com/{path}/{email}/{token}`)
 - `provider`は、ユーザーのテーブル名
 - `email_confirmation`は、[Mailable](https://readouble.com/laravel/5.5/ja/mail)で派生したクラスを必要に応じて変更すること。
 確認メールを送るときに使用する。  
@@ -68,7 +87,6 @@ Authユーザーが`users`の場合(**必ず名前は、テーブル名にする
     'confirmations' => [
         'users' => [
             'model' => App\User::class,
-            'path' => 'user/register/',
             'email_confirmation' => Kaoken\LaravelConfirmation\Mail\ConfirmationMailToUser::class,
             'email_registration' => Kaoken\LaravelConfirmation\Mail\RegistrationMailToUser::class,
             'table' => 'confirmation_users',
@@ -122,10 +140,6 @@ php artisan migrate
         }
     }
 ```
-
-### `.env`
-* `CONFIRMATION_FROM_EMAIL` は、返信先のメールアドレス。デフォルトで、デフォルトのメールアドレスになる。
-* `CONFIRMATION_FROM_NAME` は、返信先の名前。デフォルトで`webmaster`になる。
 
 
 ### メール
@@ -215,9 +229,9 @@ Route::group([
         Route::get('login', 'AuthController@login');
     }
 );
-Route::get('register', 'AuthController@getFirstRegister');
-Route::post('register', 'AuthController@postFirstRegister');
-Route::get('register/{email}/{token}', 'AuthController@getCompleteRegistration');
+Route::get('user/register', 'AuthController@getFirstRegister');
+Route::post('user/register', 'AuthController@postFirstRegister');
+Route::get('user/register/{email}/{token}', 'AuthController@getCompleteRegistration');
 ```
 ### Auth Model
 Authユーザーモデルの例  

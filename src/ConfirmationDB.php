@@ -45,7 +45,7 @@ class ConfirmationDB
     protected $hashKey;
 
     /**
-     * The number of seconds a token should last.
+     * The number of hours a token should last.
      *
      * @var int
      */
@@ -300,7 +300,7 @@ class ConfirmationDB
     public function existenceEmail($email)
     {
         return $this->getTable()
-            ->where('email', '=', $email)
+            ->where('email', $email)
             ->count() > 0;
     }
 

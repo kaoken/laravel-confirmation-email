@@ -70,7 +70,6 @@ class ConfirmationBrokerManager implements FactoryContract
             $config,
             $this->createTokenRepository($config),
             $config['model'],
-            $config['path'],
             $this->app['mailer'],
             $config['email_confirmation'],
             $config['email_registration']
@@ -121,7 +120,7 @@ class ConfirmationBrokerManager implements FactoryContract
      */
     public function getDefaultDriver()
     {
-        return $this->app['config']['auth.defaults.confirmations'];
+        return $this->app['config']['auth.defaults.confirmation'];
     }
 
     /**
@@ -132,7 +131,7 @@ class ConfirmationBrokerManager implements FactoryContract
      */
     public function setDefaultDriver($name)
     {
-        $this->app['config']['auth.defaults.confirmations'] = $name;
+        $this->app['config']['auth.defaults.confirmation'] = $name;
     }
 
     /**
@@ -144,6 +143,6 @@ class ConfirmationBrokerManager implements FactoryContract
      */
     public function __call($method, $parameters)
     {
-        return call_user_func_array([$this->broker(), $method], $parameters);
+        return $this->broker()->{$method}(...$parameters);
     }
 }
