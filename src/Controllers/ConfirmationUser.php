@@ -16,7 +16,9 @@ trait ConfirmationUser
      */
     protected function createUserAndSendConfirmationLink(array $data)
     {
-        $response = Confirmation::broker($this->broker)
+        $broker = property_exists($this, 'broker')?$this->broker:null;
+
+        $response = Confirmation::broker($broker)
             ->createUserAndSendConfirmationLink($data);
         if ($response != Confirmation::CONFIRMATION_LINK_SENT) {
             return false;
@@ -54,10 +56,9 @@ trait ConfirmationUser
     public function getCompleteRegistration(Request $request, $email, $token)
     {
         if( !($email == "" || $token == "") ){
-            /**
-             * @var \Kaoken\LaravelConfirmation\ConfirmationBroker
-             */
-            $obj = Confirmation::broker($this->broker);
+            $broker = property_exists($this, 'broker')?$this->broker:null;
+
+            $obj = Confirmation::broker($broker);
             switch ($obj->registration($email, $token)){
                 case Confirmation::REGISTRATION:
                     return response()->view($this->completeRegistrationView());

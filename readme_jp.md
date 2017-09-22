@@ -2,7 +2,7 @@
 Laravelでユーザー仮登録後に確認メールを送り、指定アドレスにアクセス後に本登録が行われる。
 
 [![Travis](https://img.shields.io/travis/rust-lang/rust.svg)]()
-[![composer version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
+[![composer version](https://img.shields.io/badge/version-1.1.1-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
 [![licence](https://img.shields.io/badge/licence-MIT-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
 [![laravel version](https://img.shields.io/badge/Laravel%20version-≧5.5-red.svg)](https://github.com/kaoken/laravel-confirmation-email)
 
@@ -70,6 +70,20 @@ composer install kaoken/laravel-confirmation-email
 }
 ```
 ### **`config\auth.php`**へ追加する例
+`'email_reset' => 'users',`を追加
+```php
+[
+    ...
+    'defaults' => [
+        'guard' => 'web',
+        'passwords' => 'users',
+        // 追加
+        'confirmation' => 'users',
+    ],
+    ...
+]
+```  
+
 Authユーザーが`users`の場合(**必ず名前は、テーブル名にすること**)
 
 
