@@ -2,7 +2,7 @@
 Laravel sends confirmation mail after Auth user first registration, complete registration is done after accessing designated address.
 
 [![Travis](https://img.shields.io/travis/rust-lang/rust.svg)]()
-[![composer version](https://img.shields.io/badge/version-1.1.1-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
+[![composer version](https://img.shields.io/badge/version-1.1.2-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
 [![licence](https://img.shields.io/badge/licence-MIT-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
 [![laravel version](https://img.shields.io/badge/Laravel%20version-≧5.5-red.svg)](https://github.com/kaoken/laravel-confirmation-email)
 
@@ -18,7 +18,7 @@ __Table of content__
 **composer**:
 
 ```bash
-composer install kaoken/laravel-confirmation-email
+composer require kaoken/laravel-confirmation-email
 ```
 
 or, add `composer.json`  
@@ -26,7 +26,7 @@ or, add `composer.json`
 ```json 
   "require": {
     ...
-    "kaoken/laravel-confirmation-email":"^1.0"
+    "kaoken/laravel-confirmation-email":"^1.1"
   }
 ```
 
@@ -149,11 +149,9 @@ This is used to delete users who passed 24 hours after 1st registration.
     protected function schedule(Schedule $schedule)
     {
         ...
-        App\Console\Kernel::schedule(Schedule $schedule){
-            $schedule->call(function(){
-                Confirmation::broker('user')->deleteUserAndToken();
-            )->hourly();
-        }
+        $schedule->call(function(){
+            Confirmation::broker('user')->deleteUserAndToken();
+        )->hourly();
     }
 ```
 
