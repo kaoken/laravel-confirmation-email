@@ -2,7 +2,7 @@
 Laravel sends confirmation mail after Auth user first registration, complete registration is done after accessing designated address.
 
 [![Travis](https://img.shields.io/travis/rust-lang/rust.svg)]()
-[![composer version](https://img.shields.io/badge/version-1.1.2-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
+[![composer version](https://img.shields.io/badge/version-1.1.3-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
 [![licence](https://img.shields.io/badge/licence-MIT-blue.svg)](https://github.com/kaoken/laravel-confirmation-email)
 [![laravel version](https://img.shields.io/badge/Laravel%20version-≧5.5-red.svg)](https://github.com/kaoken/laravel-confirmation-email)
 
@@ -21,16 +21,6 @@ __Table of content__
 composer require kaoken/laravel-confirmation-email
 ```
 
-or, add `composer.json`  
-
-```json 
-  "require": {
-    ...
-    "kaoken/laravel-confirmation-email":"^1.1"
-  }
-```
-
-
 
 ## Setting
 
@@ -47,27 +37,6 @@ or, add `composer.json`
         // add
         'Confirmation' => Kaoken\LaravelConfirmation\Facades\Confirmation::class
     ],
-```
-  
-or, add `composer.json`  
-  
-```js
-{
-    ...
-    "extra": {
-        "laravel": {
-            "dont-discover": [
-            ],
-            "providers": [
-                "Kaoken\\LaravelConfirmation\\ConfirmationServiceProvider",
-            ],
-            "aliases": {
-                "MailReset": "Kaoken\\LaravelConfirmation\\Facades\\Confirmation"
-            }
-        }
-    },
-    ...
-}
 ```
   
 ### Example of adding to **`config\auth.php`**
